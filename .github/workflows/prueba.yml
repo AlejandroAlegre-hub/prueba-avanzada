@@ -1,0 +1,24 @@
+name: Validación de Tokens en Self-Hosted Runner
+
+on: [push]
+
+jobs:
+  comparar-tokens:
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Comparar DEV_TOKEN con variable local
+        shell: powershell
+        env:
+          GITHUB_DEV_TOKEN: ${{ secrets.DEV_TOKEN }}
+        run: |
+          Write-Output "Comparando tokens..."
+          if ($env:GITHUB_DEV_TOKEN -eq $env:LOCAL_DEV_TOKEN) {
+              Write-Output "SUCCESS: Los tokens coinciden perfectamente."
+          } else {
+              Write-Error "ERROR: Los tokens NO coinciden."
+              exit 1
+          }
